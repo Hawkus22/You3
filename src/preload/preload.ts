@@ -48,14 +48,20 @@ contextBridge.exposeInMainWorld('you3', {
   },
   app: {
     info: () => invoke('app:info'),
-    checkUpdate: () => invoke('app:checkUpdate'),
     openExternal: (url: string) => invoke('app:openExternal', url),
+  },
+
+  update: {
+    state: () => invoke('update:state'),
+    check: () => invoke('update:check'),
+    install: () => invoke('update:install'),
   },
 
   onQueue: (cb: (items: unknown[]) => void) => on('queue:update', cb),
   onLogsChanged: (cb: () => void) => on('logs:changed', cb),
   onNav: (cb: (tab: string) => void) => on('nav', cb),
   onImportResult: (cb: (r: unknown) => void) => on('import-result', cb),
+  onUpdateState: (cb: (s: unknown) => void) => on('update:state', cb),
   onToolsBusy: (cb: (busy: boolean) => void) => on('tools:busy', cb),
   onToolsChanged: (cb: () => void) => on('tools:changed', cb),
 });

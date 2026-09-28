@@ -1,4 +1,4 @@
-import { app, net } from 'electron';
+import { net } from 'electron';
 import fs from 'fs';
 import { spawn } from 'child_process';
 import { Readable } from 'stream';
@@ -102,40 +102,4 @@ export async function ensureYtdlp(): Promise<void> {
   } catch (e) {
     log('WARN', 'tools', `Vérification de yt-dlp impossible : ${(e as Error).message}`);
   }
-}
-
-// ---- Mise à jour de l'application elle-même ------------------------------
-
-export interface AppUpdateInfo {
-  configured: boolean;
-  current: string;
-  latest?: string;
-  upToDate?: boolean;
-  url?: string;
-  notes?: string;
-}
-
-function newer(a: string, b: string): boolean {
-  const pa = a.split('.').map(Number);
-  const pb = b.split('.').map(Number);
-  for (let i = 0; i < 3; i++) {
-    if ((pa[i] ?? 0) !== (pb[i] ?? 0)) return (pa[i] ?? 0) > (pb[i] ?? 0);
-  }
-  return false;
-}
-
-/**
- * Lit un fichier JSON { "version": "0.2.0", "url": "https://...", "notes": "..." }
- * hébergé à l'adresse configurée dans les paramètres.
- */
-export async function checkAppUpdate(): Promise<AppUpdateInfo> {
-  const current = app.getVersion();
-  const url = getSettings().updateUrl;
-  if (!url) return { configured: false, current };
-  const res = await net.fetch(url);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const j = (await res.json()) as { version: string; url?: string; notes?: string };
-  const info = { configured: true, current, latest: j.version, upToDate: !newer(j.version, current), url: j.url, notes: j.notes };
-  log('INFO', 'update', `Vérification de You3 : ${current} -> ${j.version}`);
-  return info;
 }

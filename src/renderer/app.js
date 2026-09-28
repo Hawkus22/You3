@@ -230,7 +230,6 @@ async function loadMaintenance() {
   $('ffmpegState').textContent = st.ffmpegOk ? `Opérationnel — ${st.ffmpegVersion}` : 'ffmpeg introuvable : réinstallez l\'application';
   $('setBitrate').value = String(settings.bitrate);
   $('setAutoUpdate').checked = settings.autoUpdateYtdlp;
-  $('setUpdateUrl').value = settings.updateUrl;
   $('appVersionLine').textContent = `Version installée : ${info.version}`;
 }
 api.onToolsChanged(() => currentTab === 'maintenance' && loadMaintenance());
@@ -238,7 +237,6 @@ api.onToolsBusy((busy) => $('toolsBusy').classList.toggle('hidden', !busy));
 
 $('setBitrate').addEventListener('change', (e) => api.settings.set({ bitrate: Number(e.target.value) }));
 $('setAutoUpdate').addEventListener('change', (e) => api.settings.set({ autoUpdateYtdlp: e.target.checked }));
-$('setUpdateUrl').addEventListener('change', (e) => api.settings.set({ updateUrl: e.target.value }));
 
 $('btnCheckYtdlp').addEventListener('click', async () => {
   $('ytdlpMsg').textContent = 'Vérification…';
@@ -257,15 +255,27 @@ $('btnUpdateYtdlp').addEventListener('click', async () => {
   $('btnUpdateYtdlp').disabled = false;
   loadMaintenance();
 });
-$('btnCheckApp').addEventListener('click', async () => {
-  const box = $('appUpdateMsg');
-  box.replaceChildren('Vérification…');
-  const r = await api.app.checkUpdate();
-  if (!r.ok) return box.replaceChildren(`Vérification impossible : ${r.error}`);
-  if (!r.configured) return box.replaceChildren('Aucune adresse configurée : renseignez le fichier de version ci-dessus.');
-  if (r.upToDate) return box.replaceChildren(`You3 est à jour (${r.current}).`);
-  box.replaceChildren(`Version ${r.latest} disponible${r.notes ? ` — ${r.notes}` : ''}. `, r.url ? h('a', { href: '#', onclick: (e) => { e.preventDefault(); api.app.openExternal(r.url); } }, 'Télécharger') : '');
-});
+function renderUpdate(u) {
+  const msgs = {
+    idle: '',
+    dev: "Disponible uniquement dans l'application installée.",
+    checking: 'Recherche en cours…',
+    none: `You3 est à jour (${u.current}).`,
+    downloading: `Version ${u.version} trouvée, téléchargement… ${u.percent ?? 0} %`,
+    ready: `Version ${u.version} téléchargée : redémarrez pour l'installer.`,
+    error: `Vérification impossible : ${u.error}`,
+  };
+  $('appUpdateMsg').textContent = msgs[u.status] ?? '';
+  const ready = u.status === 'ready';
+  $('btnInstallApp').classList.toggle('hidden', !ready);
+  $('btnUpdateBanner').classList.toggle('hidden', !ready);
+  $('btnCheckApp').disabled = u.status === 'checking' || u.status === 'downloading';
+}
+api.onUpdateState(renderUpdate);
+api.update.state().then(renderUpdate);
+$('btnCheckApp').addEventListener('click', () => api.update.check());
+$('btnInstallApp').addEventListener('click', () => api.update.install());
+$('btnUpdateBanner').addEventListener('click', () => api.update.install());
 $('btnFolderDl').addEventListener('click', () => api.fs.openDownloads());
 $('btnFolderLogs').addEventListener('click', () => api.logs.openFolder());
 $('btnFolderData').addEventListener('click', async () => api.app.openExternal && (await api.fs.showInFolder((await api.app.info()).dbFile)));

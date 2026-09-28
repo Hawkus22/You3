@@ -18,6 +18,7 @@
       <button data-tab="about">À propos</button>
     </nav>
     <div id="toolsBusy" class="busy hidden">Préparation de yt-dlp…</div>
+    <button id="btnUpdateBanner" class="primary small hidden">Mise à jour prête : installer</button>
   </header>
 
   <main>
@@ -113,10 +114,9 @@
       <div class="card">
         <h2>Mise à jour de You3</h2>
         <p id="appVersionLine" class="muted"></p>
-        <label for="setUpdateUrl">Adresse du fichier de version (JSON)</label>
-        <input id="setUpdateUrl" type="text" placeholder="https://exemple.fr/you3/version.json" spellcheck="false" />
         <div class="row actions">
           <button id="btnCheckApp">Rechercher une mise à jour de You3</button>
+          <button id="btnInstallApp" class="primary hidden">Redémarrer et installer</button>
         </div>
         <p id="appUpdateMsg" class="hint"></p>
       </div>
