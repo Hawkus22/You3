@@ -1,6 +1,6 @@
 # You3 : mode d'emploi
 
-**You3** convertit des vidéos YouTube en fichiers **MP3**. Vous collez un lien (ou vous chargez une liste de liens dans un fichier `.txt`), et l'application enregistre le MP3 dans votre dossier **Téléchargements**.
+**You3** convertit des vidéos **YouTube, Facebook et TikTok** en fichiers **MP3**. Vous collez un lien (ou vous chargez une liste de liens dans un fichier `.txt`), et l'application enregistre le MP3 dans votre dossier **Téléchargements**.
 
 Application développée par **Vachon Marc-Olivier** pour **Hawkus Corp.**, pour un usage personnel.
 
@@ -64,7 +64,7 @@ Recommencez les étapes ci-dessus sur l'autre PC. Chaque PC a sa propre installa
 ![Écran d'accueil de You3](img/01-accueil.png)
 *L'écran d'accueil : un champ pour les liens et la file d'attente en dessous.*
 
-1. **Copiez** l'adresse d'une vidéo YouTube (barre d'adresse du navigateur, ou bouton « Partager » de YouTube).
+1. **Copiez** l'adresse d'une vidéo YouTube, Facebook ou TikTok (barre d'adresse du navigateur, ou bouton « Partager » / « Copier le lien » du site).
 2. **Collez-la** dans le champ de You3 (`Ctrl+V`). La conversion démarre toute seule.
 3. **Récupérez** votre MP3 dans le dossier **Téléchargements** (bouton « Ouvrir Téléchargements », ou bouton « Afficher » sur la ligne terminée).
 
@@ -76,7 +76,7 @@ C'est tout. Le reste de ce document détaille chaque fonction.
 
 ### Coller un lien
 
-Cliquez dans le champ « Collez un ou plusieurs liens YouTube » et collez l'adresse.
+Cliquez dans le champ « Collez un ou plusieurs liens (YouTube, Facebook, TikTok) » et collez l'adresse.
 
 ![Un lien collé dans le champ](img/02-collage.png)
 *Le lien est collé dans le champ.*
@@ -87,15 +87,30 @@ Cliquez dans le champ « Collez un ou plusieurs liens YouTube » et collez l'adr
 
 ### Les liens acceptés
 
-| Type de lien | Exemple | Accepté |
-|---|---|---|
-| Lien classique | `https://www.youtube.com/watch?v=jNQXAC9IVRw` | Oui |
-| Lien court | `https://youtu.be/jNQXAC9IVRw` | Oui |
-| YouTube Shorts | `https://www.youtube.com/shorts/…` | Oui |
-| YouTube Music, version mobile | `music.youtube.com`, `m.youtube.com` | Oui |
-| Lien sans `https://` | `youtube.com/watch?v=jNQXAC9IVRw` | Oui |
-| Playlist entière | `https://www.youtube.com/playlist?list=…` | **Non** (refusé avec un message) |
-| Site autre que YouTube | `https://exemple.com/…` | **Non** (refusé avec un message) |
+| Site | Type de lien | Exemple | Accepté |
+|---|---|---|---|
+| YouTube | Lien classique | `https://www.youtube.com/watch?v=jNQXAC9IVRw` | Oui |
+| YouTube | Lien court | `https://youtu.be/jNQXAC9IVRw` | Oui |
+| YouTube | Shorts, YouTube Music, version mobile | `youtube.com/shorts/…`, `music.youtube.com`, `m.youtube.com` | Oui |
+| YouTube | Playlist entière | `https://www.youtube.com/playlist?list=…` | **Non** |
+| Facebook | Vidéo | `https://www.facebook.com/watch/?v=…`, `facebook.com/page/videos/…`, `facebook.com/video.php?v=…` | Oui |
+| Facebook | Reel | `https://www.facebook.com/reel/…` | Oui |
+| Facebook | Lien de partage et lien court | `facebook.com/share/v/…`, `fb.watch/…` | Oui |
+| Facebook | Page, profil, groupe, story | `https://www.facebook.com/nomdelapage` | **Non** |
+| TikTok | Vidéo | `https://www.tiktok.com/@compte/video/…` | Oui |
+| TikTok | Lien court de partage | `https://vm.tiktok.com/…`, `vt.tiktok.com/…`, `tiktok.com/t/…` | Oui |
+| TikTok | Profil, diaporama de photos | `https://www.tiktok.com/@compte` | **Non** |
+| Autre site | Instagram, X, Vimeo, etc. | `https://exemple.com/…` | **Non** (refusé avec un message) |
+
+Un lien peut être collé **sans** le début `https://`. Les liens refusés sont signalés dans l'encadré jaune sous le champ, avec la raison.
+
+### Facebook et TikTok : ce qu'il faut savoir
+
+- **Facebook** : seules les vidéos **publiques** fonctionnent. Une vidéo privée, réservée à des amis ou à un groupe, supprimée, ou qui demande de se connecter donne un échec (KO) avec un message explicite : You3 ne peut pas se connecter à votre compte Facebook. Certaines vidéos publiques peuvent aussi être refusées par Facebook ; mettez alors yt-dlp à jour (onglet Maintenance) puis réessayez.
+- **TikTok** : collez le lien d'une **vidéo** précise (le bouton « Copier le lien » de l'application marche). Le titre du fichier est la légende de la vidéo, raccourcie : les émojis et les `#hashtags` peuvent y figurer.
+- **Qualité audio** : elle dépend de la source. Si TikTok fournit déjà un audio en MP3 à 128 kbps, You3 ne peut pas l'améliorer, même si vous avez choisi 320 kbps.
+- **Pochette** : YouTube et TikTok fournissent une image intégrée au MP3 ; Facebook n'en fournit généralement pas.
+- **Doublons** : une même vidéo Facebook ou TikTok est reconnue même si le lien a une forme différente (par exemple `watch/?v=…` et `/videos/…`). Les liens courts de partage (`vm.tiktok.com`, `fb.watch`, `share/…`) ne peuvent pas être comparés aux liens complets : la même vidéo peut donc être convertie deux fois.
 
 ### Liens avec `list=` ou `radio=` (Mix et playlists)
 
@@ -110,7 +125,7 @@ Certains liens contiennent, après l'identifiant de la vidéo, des morceaux comm
 
 Chaque lien devient une ligne dans la **file d'attente**. La conversion se déroule en plusieurs phases :
 
-1. **Analyse du lien** : You3 interroge YouTube.
+1. **Analyse du lien** : You3 interroge le site de la vidéo.
 2. **Téléchargement** : le pourcentage et la vitesse s'affichent.
 3. **Conversion en MP3** : quand le téléchargement atteint 100 %, l'audio est converti.
 4. **Terminé** (étiquette verte **OK**) ou **Échec** (étiquette rouge **KO**).
@@ -178,7 +193,7 @@ L'encadré jaune indique :
 - combien étaient **déjà téléchargés** auparavant (voir [Les doublons](#7-les-doublons)) ;
 - combien de **doublons** ont été ignorés dans la liste ;
 - si vous avez répondu Oui, le rappel que chaque lien converti sera retiré du fichier ;
-- la **liste des entrées ignorées**, avec la raison (lien non YouTube, playlist, identifiant introuvable). Les huit premières s'affichent.
+- la **liste des entrées ignorées**, avec la raison (site non pris en charge, playlist, profil, identifiant introuvable). Les huit premières s'affichent.
 
 Cet encadré disparaît quand vous cliquez sur sa croix **✕**, sur **Vider les terminés** ou sur **Tout annuler**. Il n'est jamais conservé d'une ouverture de l'application à l'autre.
 
@@ -228,7 +243,7 @@ Les MP3 sont enregistrés dans le **dossier Téléchargements par défaut de Win
 - **Nom du fichier** : le titre de la vidéo, par exemple `Me at the zoo.mp3`. Les caractères interdits par Windows (`\ / : * ? " < > |`) sont remplacés, et les titres très longs sont raccourcis.
 - **Fichier déjà existant** : You3 n'écrase jamais rien. Si `Titre.mp3` existe, le nouveau fichier s'appelle `Titre (1).mp3`, puis `Titre (2).mp3`, etc.
 - **Qualité** : 320 kbps par défaut (modifiable, voir [Maintenance](#10-la-maintenance-et-les-mises-à-jour)).
-- **Informations intégrées** : titre, artiste et pochette (la miniature de la vidéo) sont inscrits dans le fichier MP3 quand YouTube les fournit. Votre lecteur de musique les affiche.
+- **Informations intégrées** : titre, artiste et pochette (la miniature de la vidéo) sont inscrits dans le fichier MP3 quand le site les fournit. Votre lecteur de musique les affiche.
 
 ---
 
@@ -310,7 +325,7 @@ L'onglet **Maintenance** regroupe les réglages et la mise à jour des composant
 
 ### Moteur de téléchargement (yt-dlp)
 
-C'est le programme qui récupère l'audio sur YouTube. YouTube change souvent son fonctionnement : **quand une conversion échoue sans raison apparente, mettez d'abord yt-dlp à jour.**
+C'est le programme qui récupère l'audio sur YouTube, Facebook et TikTok. Ces sites changent souvent leur fonctionnement : **quand une conversion échoue sans raison apparente, mettez d'abord yt-dlp à jour.**
 
 - **Rechercher une mise à jour** : compare votre version avec la dernière version publiée et vous l'indique.
 - **Mettre à jour / réinstaller yt-dlp** : télécharge la dernière version. Impossible pendant une conversion : attendez la fin de la file.
@@ -397,6 +412,8 @@ Vos MP3, eux, sont dans le dossier Téléchargements.
 | **Vidéo privée** | La vidéo n'est visible que par son propriétaire. | Rien à faire : elle n'est pas accessible. |
 | **Vidéo indisponible ou supprimée** | La vidéo a été retirée, ou le lien est faux. | Vérifiez le lien dans votre navigateur. |
 | **Restriction d'âge (connexion requise)** | YouTube exige d'être connecté. | Non pris en charge par You3. |
+| **Vidéo Facebook privée, supprimée ou réservée aux utilisateurs connectés** | La vidéo n'est pas publique, ou Facebook refuse l'accès. | Vérifiez qu'elle est publique (ouvrez le lien sans être connecté) ; sinon mettez yt-dlp à jour. |
+| **TikTok a refusé l'accès à cette vidéo** | Vidéo privée, supprimée, limitée par pays, ou blocage temporaire de TikTok. | Réessayez plus tard ; mettez yt-dlp à jour. |
 | **Vidéo bloquée dans votre pays** | Restriction géographique. | Non pris en charge. |
 | **Réservée aux membres de la chaîne** | Contenu payant. | Non pris en charge. |
 | **Diffusion en direct ou première pas encore terminée** | Le direct n'est pas fini. | Réessayez quand la vidéo est terminée. |
@@ -404,7 +421,7 @@ Vos MP3, eux, sont dans le dossier Téléchargements.
 | **YouTube demande une vérification anti-robot** | YouTube limite temporairement les accès. | Attendez un moment et réessayez ; mettez yt-dlp à jour. |
 | **Extraction impossible : mettez à jour yt-dlp** | YouTube a changé son fonctionnement. | **Maintenance → Mettre à jour yt-dlp**, puis Réessayer. |
 | **yt-dlp est absent** | Le moteur n'a pas pu être téléchargé au premier lancement. | **Maintenance → Mettre à jour / réinstaller yt-dlp** (connexion internet nécessaire). |
-| **Le lien est refusé** | Ce n'est pas un lien de vidéo YouTube, ou c'est une playlist. | Copiez l'adresse d'une vidéo précise. |
+| **Le lien est refusé** | Site autre que YouTube, Facebook ou TikTok, ou lien de playlist, de page ou de profil. | Copiez l'adresse d'une vidéo précise de l'un de ces trois sites. |
 | **Windows bloque l'installeur** | Programme non signé (SmartScreen). | **Informations complémentaires → Exécuter quand même.** |
 | **Rien ne se passe au collage** | Le lien n'est pas reconnu. | Regardez l'encadré jaune sous le champ : il donne la raison. |
 | **Le MP3 est introuvable** | Fichier déplacé, ou dossier Téléchargements redirigé. | Bouton **Afficher** sur la ligne, ou chemin indiqué dans l'historique. |
@@ -416,12 +433,13 @@ Vos MP3, eux, sont dans le dossier Téléchargements.
 
 ## 14. Limites de la version actuelle
 
-- **Vidéos uniquement, une à la fois** : les playlists ne sont pas prises en charge (le lien d'une vidéo au sein d'une playlist fonctionne, mais seule cette vidéo est convertie).
+- **Vidéos uniquement, une à la fois** : les playlists, profils et pages ne sont pas pris en charge (le lien d'une vidéo au sein d'une playlist YouTube fonctionne, mais seule cette vidéo est convertie).
+- **Sites** : YouTube, Facebook et TikTok uniquement.
 - **MP3 uniquement** (pas de M4A, WAV, etc.).
 - **Windows 64 bits uniquement.**
 - **Connexion internet obligatoire.**
 - **Français uniquement.**
-- Les vidéos privées, réservées aux membres, soumises à une restriction d'âge ou bloquées géographiquement ne peuvent pas être converties.
+- Les vidéos privées (y compris sur Facebook), réservées aux membres, soumises à une restriction d'âge ou bloquées géographiquement ne peuvent pas être converties : You3 ne se connecte à aucun compte.
 
 ---
 
@@ -431,11 +449,11 @@ Vos MP3, eux, sont dans le dossier Téléchargements.
 
 - **Aucun compte, aucune publicité, aucune statistique d'usage** : You3 n'envoie aucune donnée vous concernant à Hawkus Corp.
 - Tout ce que vous faites (historique, journaux, réglages) reste **sur votre ordinateur**.
-- You3 se connecte uniquement à : **YouTube** (pour récupérer l'audio) et **GitHub** (pour les mises à jour de You3 et de yt-dlp, et certains composants d'extraction).
+- You3 se connecte uniquement à : **YouTube**, **Facebook** et **TikTok** (selon les liens que vous collez, pour récupérer l'audio) et **GitHub** (pour les mises à jour de You3 et de yt-dlp, et certains composants d'extraction).
 
 ### Usage légal
 
-Le téléchargement de contenus depuis YouTube peut aller à l'encontre de ses conditions d'utilisation, et la copie d'œuvres protégées peut être illicite selon les pays.
+Le téléchargement de contenus depuis YouTube, Facebook ou TikTok peut aller à l'encontre de leurs conditions d'utilisation, et la copie d'œuvres protégées peut être illicite selon les pays.
 
 **Utilisez You3 uniquement pour des contenus dont vous détenez les droits ou dont la copie est autorisée** (vos propres vidéos, contenus libres de droits ou sous licence permettant la copie). Vous êtes responsable de l'usage que vous en faites.
 

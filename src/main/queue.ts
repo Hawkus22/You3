@@ -193,6 +193,8 @@ const FRIENDLY: [RegExp, string][] = [
   [/not available in your country|blocked it in your country|geo/i, 'Vidéo bloquée dans votre pays'],
   [/confirm you.re not a bot/i, 'YouTube demande une vérification anti-robot ; réessayez plus tard'],
   [/Unable to download webpage|getaddrinfo|Temporary failure|timed out|Connection|Errno 11001/i, 'Problème de connexion réseau'],
+  [/\[facebook\]/i, 'Vidéo Facebook privée, supprimée ou réservée aux utilisateurs connectés (si elle est publique, mettez à jour yt-dlp)'],
+  [/\[tiktok\]/i, "TikTok a refusé l'accès à cette vidéo (privée, supprimée, limitée par pays ou blocage temporaire ; sinon mettez à jour yt-dlp)"],
   [/members-only|Join this channel/i, 'Vidéo réservée aux membres de la chaîne'],
   [/live event will begin|is live|premieres in/i, "Diffusion en direct ou première pas encore terminée"],
   [/Requested format is not available|nsig|Signature/i, 'Extraction impossible : mettez à jour yt-dlp (onglet Maintenance)'],
