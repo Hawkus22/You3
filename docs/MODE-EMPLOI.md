@@ -164,6 +164,8 @@ L'encadré jaune indique :
 - combien de **doublons** ont été ignorés dans la liste ;
 - la **liste des entrées ignorées**, avec la raison (lien non YouTube, playlist, identifiant introuvable). Les huit premières s'affichent.
 
+Cet encadré disparaît quand vous cliquez sur sa croix **✕**, sur **Vider les terminés** ou sur **Tout annuler**. Il n'est jamais conservé d'une ouverture de l'application à l'autre.
+
 Les conversions démarrent automatiquement, **une à la fois**, dans l'ordre de la liste.
 
 ---
@@ -194,8 +196,8 @@ La file d'attente est la liste située sous le champ de saisie. Elle montre tous
 
 ### Les boutons en haut de la liste
 
-- **Tout annuler** : annule la conversion en cours et les liens en attente.
-- **Vider les terminés** : retire de la liste les lignes OK, KO et « Déjà téléchargé ».
+- **Tout annuler** : annule la conversion en cours et les liens en attente, et ferme l'encadré de compte rendu.
+- **Vider les terminés** : retire de la liste les lignes OK, KO et « Déjà téléchargé », et ferme l'encadré de compte rendu.
 
 > La file d'attente ne garde que la session en cours. Pour retrouver ce qui a été converti avant, utilisez l'[Historique](#8-lhistorique).
 
