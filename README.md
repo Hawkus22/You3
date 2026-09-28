@@ -10,6 +10,7 @@ npm install
 npm run start      # compile puis lance l'application
 npm run dist       # installeur Windows -> release/You3-Setup-x.y.z.exe
 npm run icon       # régénère assets/icon.png depuis le SVG de scripts/make-icon.js
+npm run release    # publie la version de package.json sur GitHub Releases
 ```
 
 Node 22+ requis (la base SQLite utilise le module intégré `node:sqlite`, aucune compilation native).
@@ -32,5 +33,16 @@ Données utilisateur : `%APPDATA%\You3\` (`you3.db`, `logs\`, `bin\yt-dlp.exe`).
 ## Maintenance
 
 - **yt-dlp** : téléchargé au premier lancement, vérifié à chaque démarrage (option désactivable), bouton de mise à jour dans l'onglet Maintenance.
-- **You3** : l'onglet Maintenance lit un fichier `{ "version": "0.2.0", "url": "https://…", "notes": "…" }` à l'adresse configurée.
+- **You3** : mise à jour automatique via GitHub Releases (`electron-updater`). Au lancement, l'application installée cherche une nouvelle version, la télécharge en arrière-plan, puis propose « Redémarrer et installer » (bouton en haut ou onglet Maintenance).
 - Un traitement interrompu (fermeture, crash) est marqué KO au redémarrage suivant.
+
+## Publier une nouvelle version
+
+```
+git add -A && git commit -m "..." && git push
+npm version patch          # 0.1.0 -> 0.1.1 (crée aussi le tag git ; utiliser minor/major au besoin)
+git push --follow-tags
+npm run release            # construit l'installeur et crée la Release GitHub
+```
+
+Les installations existantes détectent la Release au prochain lancement. L'exe n'est pas signé : Windows SmartScreen affiche un avertissement à la première installation.

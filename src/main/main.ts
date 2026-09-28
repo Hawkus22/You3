@@ -6,7 +6,8 @@ import { currentLogFile, log, onLog, purgeOld } from './logger';
 import { dataDir, dirs, ytdlpPath } from './paths';
 import * as queue from './queue';
 import { getSettings, saveSettings, Settings } from './settings';
-import { checkAppUpdate, checkYtdlp, ensureYtdlp, installOrUpdateYtdlp, toolsStatus } from './tools';
+import { checkYtdlp, ensureYtdlp, installOrUpdateYtdlp, toolsStatus } from './tools';
+import { checkForUpdate, getUpdateState, initUpdater, installUpdate } from './updater';
 
 app.setName('You3');
 
@@ -161,14 +162,9 @@ function registerIpc(): void {
       return { ok: false, error: (e as Error).message };
     }
   });
-  ipcMain.handle('app:checkUpdate', async () => {
-    try {
-      return { ok: true, ...(await checkAppUpdate()) };
-    } catch (e) {
-      log('WARN', 'update', `Vérification impossible : ${(e as Error).message}`);
-      return { ok: false, error: (e as Error).message };
-    }
-  });
+  ipcMain.handle('update:state', () => getUpdateState());
+  ipcMain.handle('update:check', () => checkForUpdate());
+  ipcMain.handle('update:install', () => installUpdate());
   ipcMain.handle('app:openExternal', (_e, url: string) => {
     if (typeof url === 'string' && url.startsWith('https://')) void shell.openExternal(url);
   });
@@ -224,6 +220,9 @@ async function start(): Promise<void> {
 
   process.on('uncaughtException', (e) => log('ERROR', 'app', `Exception non gérée : ${e.stack ?? e.message}`));
   process.on('unhandledRejection', (e) => log('ERROR', 'app', `Promesse rejetée : ${String(e)}`));
+
+  initUpdater((st) => send('update:state', st));
+  if (app.isPackaged) void checkForUpdate();
 
   send('tools:busy', true);
   await ensureYtdlp();
