@@ -117,10 +117,41 @@ function buildMenu(): void {
   );
 }
 
+/** « Oui » seulement si l'utilisateur le confirme et que le fichier est modifiable. */
+async function askRemoveEntries(filePath: string): Promise<boolean> {
+  const { response } = await dialog.showMessageBox(win!, {
+    type: 'question',
+    title: 'Import du fichier',
+    message: 'Voulez-vous effacer les entrées du .txt après conversion ?',
+    detail: `Chaque lien converti avec succès sera retiré de « ${path.basename(filePath)} ». Les liens en échec restent dans le fichier.`,
+    buttons: ['Oui', 'Non'],
+    defaultId: 1,
+    cancelId: 1,
+    noLink: true,
+  });
+  if (response !== 0) return false;
+  try {
+    fs.accessSync(filePath, fs.constants.W_OK);
+    return true;
+  } catch {
+    log('WARN', 'import', `Fichier en lecture seule, les entrées ne seront pas effacées : ${filePath}`);
+    await dialog.showMessageBox(win!, {
+      type: 'warning',
+      title: 'Import du fichier',
+      message: 'Ce fichier est en lecture seule.',
+      detail: 'Les liens seront convertis, mais les entrées ne pourront pas être effacées du fichier.',
+      buttons: ['OK'],
+      noLink: true,
+    });
+    return false;
+  }
+}
+
 async function importTxt(filePath?: string): Promise<queue.AddResult | null> {
   if (!filePath) {
     const r = await dialog.showOpenDialog(win!, {
       title: 'Importer une liste de liens',
+      defaultPath: path.join(app.getPath('desktop'), 'Playlist1.txt'),
       filters: [{ name: 'Fichiers texte', extensions: ['txt'] }],
       properties: ['openFile'],
     });
@@ -130,8 +161,10 @@ async function importTxt(filePath?: string): Promise<queue.AddResult | null> {
   if (path.extname(filePath).toLowerCase() !== '.txt') throw new Error('Seuls les fichiers .txt sont acceptés');
   const stat = fs.statSync(filePath);
   if (stat.size > 5 * 1024 * 1024) throw new Error('Fichier trop volumineux (5 Mo maximum)');
-  log('INFO', 'import', `Import du fichier ${filePath}`);
-  const res = queue.addFromText(fs.readFileSync(filePath, 'utf8'));
+  const removeOnSuccess = await askRemoveEntries(filePath);
+  log('INFO', 'import', `Import du fichier ${filePath} (effacement des entrées après conversion : ${removeOnSuccess ? 'oui' : 'non'})`);
+  const res = queue.addFromText(fs.readFileSync(filePath, 'utf8'), { file: filePath, removeOnSuccess });
+  if (removeOnSuccess) res.removeFrom = path.basename(filePath);
   send('import-result', res);
   return res;
 }
