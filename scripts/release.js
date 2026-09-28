@@ -1,5 +1,5 @@
 // Publie une nouvelle version : npm run release
-// 1. vérifie que tout est commité et poussé, et que le tag n'existe pas
+// 1. vérifie que tout est commité et poussé, que le tag existe et qu'aucune Release n'existe pour cette version
 // 2. construit l'installeur
 // 3. crée la Release GitHub (exe + latest.yml + blockmap) avec gh
 // La version publiée est celle de package.json : faire `npm version patch|minor` avant.
@@ -19,7 +19,14 @@ const tag = `v${version}`;
 if (out('git status --porcelain')) die('Des modifications ne sont pas commitées.');
 run('git fetch origin --tags');
 if (out('git rev-parse HEAD') !== out('git rev-parse @{u}')) die('La branche locale diffère de origin : faites git push.');
-if (out('git tag --list ' + tag)) die(`Le tag ${tag} existe déjà : incrémentez la version (npm version patch).`);
+let released = true;
+try {
+  out(`gh release view ${tag}`);
+} catch {
+  released = false;
+}
+if (released) die(`La Release ${tag} existe déjà : incrémentez la version (npm version patch).`);
+if (!out('git tag --list ' + tag)) die(`Le tag ${tag} est absent : lancez npm version patch puis git push --follow-tags.`);
 
 run('npm run dist');
 
