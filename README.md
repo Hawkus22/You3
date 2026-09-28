@@ -1,6 +1,6 @@
 # You3
 
-Application desktop Windows (Electron + TypeScript) — Hawkus Corp.
+Application desktop Windows (Electron + TypeScript) — Hawkus Corp. (auteur : Vachon Marc-Olivier)
 Colle un lien YouTube (ou importe un `.txt`, un lien par ligne) : l'audio est récupéré avec **yt-dlp**, converti en MP3 par **ffmpeg** (320 kbps par défaut) et enregistré dans le dossier Téléchargements de Windows.
 
 ## Lancer
