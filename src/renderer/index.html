@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:;" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>You3</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">You<span>3</span></div>
+    <nav id="tabs">
+      <button data-tab="download" class="active">Téléchargement</button>
+      <button data-tab="history">Historique</button>
+      <button data-tab="logs">Journal</button>
+      <button data-tab="maintenance">Maintenance</button>
+      <button data-tab="about">À propos</button>
+    </nav>
+    <div id="toolsBusy" class="busy hidden">Préparation de yt-dlp…</div>
+  </header>
+
+  <main>
+    <!-- Téléchargement -->
+    <section id="tab-download" class="tab active">
+      <div id="dropzone" class="card">
+        <label for="urlInput">Collez un ou plusieurs liens YouTube</label>
+        <div class="row">
+          <textarea id="urlInput" rows="2" placeholder="https://www.youtube.com/watch?v=…"></textarea>
+        </div>
+        <div class="row actions">
+          <button id="btnAdd" class="primary">Convertir en MP3</button>
+          <button id="btnImport">Importer un fichier .txt</button>
+          <span class="spacer"></span>
+          <button id="btnOpenDl">Ouvrir Téléchargements</button>
+        </div>
+        <p class="hint">Vous pouvez aussi glisser-déposer un fichier .txt (un lien par ligne, # pour un commentaire).</p>
+        <div id="notice" class="notice hidden"></div>
+      </div>
+
+      <div class="listhead">
+        <h2>File d'attente</h2>
+        <span class="spacer"></span>
+        <button id="btnCancelAll" class="small">Tout annuler</button>
+        <button id="btnClearDone" class="small">Vider les terminés</button>
+      </div>
+      <ul id="queueList" class="list"></ul>
+      <p id="queueEmpty" class="empty">Aucun élément. Collez un lien pour commencer.</p>
+      <p class="legal">Usage personnel : ne téléchargez que des contenus dont vous détenez les droits ou dont la copie est autorisée.</p>
+    </section>
+
+    <!-- Historique -->
+    <section id="tab-history" class="tab">
+      <div class="toolbar">
+        <input id="histSearch" type="search" placeholder="Rechercher (titre, lien)…" />
+        <select id="histStatus">
+          <option value="">Tous</option>
+          <option value="OK">Réussis (OK)</option>
+          <option value="KO">Échecs (KO)</option>
+        </select>
+        <span id="histStats" class="muted"></span>
+        <span class="spacer"></span>
+        <button id="btnHistClear" class="small danger">Vider l'historique</button>
+      </div>
+      <ul id="histList" class="list"></ul>
+      <p id="histEmpty" class="empty">Historique vide.</p>
+    </section>
+
+    <!-- Journal -->
+    <section id="tab-logs" class="tab">
+      <div class="toolbar">
+        <select id="logLevel">
+          <option value="ALL">Tous les niveaux</option>
+          <option value="ERROR">ERROR</option>
+          <option value="WARN">WARN</option>
+          <option value="INFO">INFO</option>
+          <option value="DEBUG">DEBUG</option>
+        </select>
+        <input id="logSearch" type="search" placeholder="Filtrer…" />
+        <span class="spacer"></span>
+        <button id="btnLogFolder" class="small">Ouvrir le dossier des logs</button>
+        <button id="btnLogClear" class="small danger">Vider le journal</button>
+      </div>
+      <div id="logFile" class="muted small-text"></div>
+      <div id="logList" class="logs"></div>
+    </section>
+
+    <!-- Maintenance -->
+    <section id="tab-maintenance" class="tab">
+      <div class="card">
+        <h2>Moteur de téléchargement (yt-dlp)</h2>
+        <p id="ytdlpState" class="muted">…</p>
+        <div class="row actions">
+          <button id="btnCheckYtdlp">Rechercher une mise à jour</button>
+          <button id="btnUpdateYtdlp" class="primary">Mettre à jour / réinstaller yt-dlp</button>
+        </div>
+        <p id="ytdlpMsg" class="hint"></p>
+        <label class="check"><input type="checkbox" id="setAutoUpdate" /> Vérifier et mettre à jour yt-dlp au lancement</label>
+        <p class="hint">YouTube change souvent : si un téléchargement échoue sans raison, mettez d'abord à jour yt-dlp.</p>
+      </div>
+
+      <div class="card">
+        <h2>Conversion (ffmpeg)</h2>
+        <p id="ffmpegState" class="muted">…</p>
+        <label for="setBitrate">Qualité MP3</label>
+        <select id="setBitrate">
+          <option value="128">128 kbps</option>
+          <option value="192">192 kbps</option>
+          <option value="320">320 kbps (par défaut)</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <h2>Mise à jour de You3</h2>
+        <p id="appVersionLine" class="muted"></p>
+        <label for="setUpdateUrl">Adresse du fichier de version (JSON)</label>
+        <input id="setUpdateUrl" type="text" placeholder="https://exemple.fr/you3/version.json" spellcheck="false" />
+        <div class="row actions">
+          <button id="btnCheckApp">Rechercher une mise à jour de You3</button>
+        </div>
+        <p id="appUpdateMsg" class="hint"></p>
+      </div>
+
+      <div class="card">
+        <h2>Dossiers</h2>
+        <div class="row actions">
+          <button id="btnFolderDl">Téléchargements</button>
+          <button id="btnFolderLogs">Journaux</button>
+          <button id="btnFolderData">Données de l'application</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- À propos -->
+    <section id="tab-about" class="tab">
+      <div class="card about">
+        <div class="brand big">You<span>3</span></div>
+        <p id="aboutVersion" class="muted"></p>
+        <p>Convertisseur de liens YouTube en MP3 pour usage personnel.<br />Développé par <strong>Hawkus Corp.</strong></p>
+        <table id="aboutTable"></table>
+        <h3>Composants tiers</h3>
+        <ul class="plain">
+          <li>yt-dlp — extraction audio (licence Unlicense)</li>
+          <li>ffmpeg — conversion MP3 (via ffmpeg-static, licence GPL)</li>
+          <li>Electron — interface (licence MIT)</li>
+        </ul>
+        <p class="legal">Le téléchargement depuis YouTube peut contrevenir à ses conditions d'utilisation. Utilisez You3 uniquement pour des contenus dont vous détenez les droits.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

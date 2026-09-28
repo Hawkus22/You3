@@ -1,0 +1,67 @@
+{
+  "name": "you3",
+  "productName": "You3",
+  "version": "0.1.0",
+  "description": "Convertisseur de liens YouTube en MP3 - Hawkus Corp.",
+  "author": "Hawkus Corp.",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "dist/main/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-renderer.js",
+    "start": "npm run build && node scripts/start.js .",
+    "icon": "node scripts/start.js scripts/make-icon.js",
+    "dist": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "fr.hawkuscorp.you3",
+    "productName": "You3",
+    "copyright": "Hawkus Corp.",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "assets/icon.png",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/**"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "You3",
+      "artifactName": "You3-Setup-${version}.exe",
+      "deleteAppDataOnUninstall": false,
+      "language": "1036"
+    }
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "electron": "^44.4.5",
+    "electron-builder": "^26.15.3",
+    "typescript": "^7.0.2"
+  },
+  "allowScripts": {
+    "electron@44.4.5": true,
+    "ffmpeg-static@5.3.0": true
+  }
+}
