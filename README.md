@@ -3,6 +3,8 @@
 Application desktop Windows (Electron + TypeScript) — Hawkus Corp. (auteur : Vachon Marc-Olivier)
 Colle un lien YouTube (ou importe un `.txt`, un lien par ligne) : l'audio est récupéré avec **yt-dlp**, converti en MP3 par **ffmpeg** (320 kbps par défaut) et enregistré dans le dossier Téléchargements de Windows.
 
+**Mode d'emploi complet (avec captures d'écran) : [docs/MODE-EMPLOI.md](docs/MODE-EMPLOI.md)**, également intégré à l'application (menu Aide → Mode d'emploi, touche F1).
+
 ## Lancer
 
 ```
@@ -27,6 +29,7 @@ Node 22+ requis (la base SQLite utilise le module intégré `node:sqlite`, aucun
 | `src/main/urls.ts` | extraction et normalisation des liens YouTube |
 | `src/preload/preload.ts` | API exposée à l'interface (`window.you3`) |
 | `src/renderer/` | interface (HTML/CSS/JS, sans framework) |
+| `docs/MODE-EMPLOI.md`, `docs/img/` | mode d'emploi et captures ; `scripts/generate-help.js` en tire la page d'aide de l'application à chaque build |
 
 Données utilisateur : `%APPDATA%\You3\` (`you3.db`, `logs\`, `bin\yt-dlp.exe`).
 

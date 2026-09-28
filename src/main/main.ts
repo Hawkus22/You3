@@ -12,6 +12,7 @@ import { checkForUpdate, getUpdateState, initUpdater, installUpdate } from './up
 app.setName('You3');
 
 let win: BrowserWindow | null = null;
+let helpWin: BrowserWindow | null = null;
 
 if (!app.requestSingleInstanceLock()) {
   app.quit();
@@ -58,6 +59,37 @@ function createWindow(): void {
   win.on('closed', () => (win = null));
 }
 
+function openHelp(): void {
+  if (helpWin && !helpWin.isDestroyed()) {
+    if (helpWin.isMinimized()) helpWin.restore();
+    helpWin.focus();
+    return;
+  }
+  helpWin = new BrowserWindow({
+    width: 980,
+    height: 800,
+    title: "You3 : mode d'emploi",
+    icon: path.join(__dirname, '..', '..', 'assets', 'icon.png'),
+    backgroundColor: '#14161c',
+    autoHideMenuBar: true,
+    webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true },
+  });
+  helpWin.removeMenu();
+  void helpWin.loadFile(path.join(__dirname, '..', 'renderer', 'help.html'));
+  const openOut = (url: string) => {
+    if (url.startsWith('https://')) void shell.openExternal(url);
+  };
+  helpWin.webContents.setWindowOpenHandler(({ url }) => {
+    openOut(url);
+    return { action: 'deny' };
+  });
+  helpWin.webContents.on('will-navigate', (e, url) => {
+    e.preventDefault();
+    openOut(url);
+  });
+  helpWin.on('closed', () => (helpWin = null));
+}
+
 function buildMenu(): void {
   Menu.setApplicationMenu(
     Menu.buildFromTemplate([
@@ -73,6 +105,7 @@ function buildMenu(): void {
       {
         label: 'Aide',
         submenu: [
+          { label: "Mode d'emploi", accelerator: 'F1', click: () => openHelp() },
           { label: 'Mises à jour…', click: () => send('nav', 'maintenance') },
           { label: 'Ouvrir le dossier des journaux', click: () => void shell.openPath(dirs.logs()) },
           { label: 'Outils de développement', accelerator: 'F12', role: 'toggleDevTools' },
@@ -162,6 +195,7 @@ function registerIpc(): void {
       return { ok: false, error: (e as Error).message };
     }
   });
+  ipcMain.handle('app:openHelp', () => openHelp());
   ipcMain.handle('update:state', () => getUpdateState());
   ipcMain.handle('update:check', () => checkForUpdate());
   ipcMain.handle('update:install', () => installUpdate());

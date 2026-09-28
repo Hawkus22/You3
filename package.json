@@ -8,7 +8,7 @@
   "private": true,
   "main": "dist/main/main.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json && node scripts/copy-renderer.js",
+    "build": "tsc -p tsconfig.json && node scripts/copy-renderer.js && node scripts/generate-help.js",
     "start": "npm run build && node scripts/start.js .",
     "icon": "node scripts/start.js scripts/make-icon.js",
     "dist": "npm run build && electron-builder",
@@ -67,6 +67,7 @@
     "@types/node": "^26.6.3",
     "electron": "^44.4.5",
     "electron-builder": "^26.15.3",
+    "marked": "^18.0.14",
     "typescript": "^7.0.2"
   },
   "allowScripts": {
