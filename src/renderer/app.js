@@ -32,6 +32,8 @@ function showTab(name) {
 $('tabs').addEventListener('click', (e) => {
   if (e.target.dataset.tab) showTab(e.target.dataset.tab);
 });
+$('btnHelp').addEventListener('click', () => api.app.openHelp());
+$('btnHelpAbout').addEventListener('click', () => api.app.openHelp());
 api.onNav(showTab);
 
 // ---- Ajout de liens --------------------------------------------------------

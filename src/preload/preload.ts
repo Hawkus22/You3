@@ -49,6 +49,7 @@ contextBridge.exposeInMainWorld('you3', {
   app: {
     info: () => invoke('app:info'),
     openExternal: (url: string) => invoke('app:openExternal', url),
+    openHelp: () => invoke('app:openHelp'),
   },
 
   update: {
