@@ -361,7 +361,7 @@ Dans le champ de saisie : `Ctrl+V` colle (et lance la conversion), `Entrée` val
 ![L'onglet À propos](img/09-a-propos.png)
 *L'onglet À propos : version, auteur, société, versions des composants et emplacement des fichiers.*
 
-Il affiche la version de You3, l'auteur (**Vachon Marc-Olivier**), la société (**Hawkus Corp.**), les composants utilisés et les emplacements de la base de données, des journaux et de yt-dlp.
+La version de You3 est aussi visible en permanence dans la barre de titre de la fenêtre (par exemple « You3 0.1.3 »). L'onglet affiche la version de You3, l'auteur (**Vachon Marc-Olivier**), la société (**Hawkus Corp.**), les composants utilisés et les emplacements de la base de données, des journaux et de yt-dlp.
 
 ---
 
