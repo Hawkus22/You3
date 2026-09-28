@@ -72,7 +72,10 @@ button.danger:hover { border-color: var(--ko); color: var(--ko); }
 .hint { font-size: 12px; margin: 8px 0 0; }
 .legal { color: var(--muted); font-size: 12px; margin-top: 24px; text-align: center; }
 .notice { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: var(--panel2); border-left: 3px solid var(--warn); }
+.notice { position: relative; padding-right: 36px; }
 .notice.err { border-left-color: var(--ko); }
+.notice-close { position: absolute; top: 6px; right: 6px; padding: 0 8px; background: none; border: none; color: var(--muted); font-size: 14px; }
+.notice-close:hover { color: var(--text); }
 .notice ul { margin: 6px 0 0; padding-left: 18px; }
 .dragging .card#dropzone { outline: 2px dashed var(--accent); }
 

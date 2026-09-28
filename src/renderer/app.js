@@ -38,6 +38,12 @@ api.onNav(showTab);
 
 // ---- Ajout de liens --------------------------------------------------------
 
+function hideNotice() {
+  const box = $('notice');
+  box.classList.add('hidden');
+  box.replaceChildren();
+}
+
 function showNotice(res) {
   const box = $('notice');
   box.replaceChildren();
@@ -50,6 +56,7 @@ function showNotice(res) {
   if (res.invalid.length) {
     box.append(h('div', {}, `${res.invalid.length} entrée(s) ignorée(s) :`), h('ul', {}, res.invalid.slice(0, 8).map((i) => h('li', {}, `${i.text} — ${i.reason}`))));
   }
+  box.append(h('button', { class: 'notice-close', title: 'Fermer', onclick: hideNotice }, '✕'));
   box.classList.toggle('err', !res.added && !res.alreadyDownloaded);
   box.classList.remove('hidden');
 }
@@ -142,8 +149,14 @@ function renderQueue(items) {
 }
 api.onQueue(renderQueue);
 api.queue.list().then(renderQueue);
-$('btnCancelAll').addEventListener('click', () => api.queue.cancelAll());
-$('btnClearDone').addEventListener('click', () => api.queue.clearFinished());
+$('btnCancelAll').addEventListener('click', () => {
+  hideNotice();
+  api.queue.cancelAll();
+});
+$('btnClearDone').addEventListener('click', () => {
+  hideNotice();
+  api.queue.clearFinished();
+});
 
 // ---- Historique -------------------------------------------------------------
 
