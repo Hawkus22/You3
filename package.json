@@ -3,7 +3,7 @@
   "productName": "You3",
   "version": "0.1.0",
   "description": "Convertisseur de liens YouTube en MP3 - Hawkus Corp.",
-  "author": "Hawkus Corp.",
+  "author": "Vachon Marc-Olivier",
   "license": "UNLICENSED",
   "private": true,
   "main": "dist/main/main.js",
@@ -17,7 +17,7 @@
   "build": {
     "appId": "fr.hawkuscorp.you3",
     "productName": "You3",
-    "copyright": "Hawkus Corp.",
+    "copyright": "Copyright © 2026 Hawkus Corp. — Vachon Marc-Olivier",
     "directories": {
       "output": "release"
     },

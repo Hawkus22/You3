@@ -286,7 +286,8 @@ async function loadAbout() {
   const i = await api.app.info();
   $('aboutVersion').textContent = `Version ${i.version}`;
   const rows = [
-    ['Éditeur', i.author],
+    ['Auteur', i.author],
+    ['Société', i.company],
     ['Electron', i.electron],
     ['Chromium', i.chrome],
     ['Node.js', i.node],

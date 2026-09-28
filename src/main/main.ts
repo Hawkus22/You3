@@ -171,7 +171,8 @@ function registerIpc(): void {
   ipcMain.handle('app:info', () => ({
     name: 'You3',
     version: app.getVersion(),
-    author: 'Hawkus Corp.',
+    author: 'Vachon Marc-Olivier',
+    company: 'Hawkus Corp.',
     electron: process.versions.electron,
     chrome: process.versions.chrome,
     node: process.versions.node,
