@@ -1,7 +1,7 @@
 # You3
 
 Application desktop Windows (Electron + TypeScript) — Hawkus Corp. (auteur : Vachon Marc-Olivier)
-Colle un lien YouTube (ou importe un `.txt`, un lien par ligne) : l'audio est récupéré avec **yt-dlp**, converti en MP3 par **ffmpeg** (320 kbps par défaut) et enregistré dans le dossier Téléchargements de Windows.
+Colle un lien YouTube, Facebook ou TikTok (ou importe un `.txt`, un lien par ligne) : l'audio est récupéré avec **yt-dlp**, converti en MP3 par **ffmpeg** (320 kbps par défaut) et enregistré dans le dossier Téléchargements de Windows.
 
 **Mode d'emploi complet (avec captures d'écran) : [docs/MODE-EMPLOI.md](docs/MODE-EMPLOI.md)**, également intégré à l'application (menu Aide → Mode d'emploi, touche F1).
 

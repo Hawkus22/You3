@@ -52,7 +52,7 @@ function showNotice(res) {
   if (res.alreadyDownloaded) lines.push(`${res.alreadyDownloaded} lien(s) déjà téléchargé(s) auparavant : à confirmer dans la file.`);
   if (res.alreadyInQueue) lines.push(`${res.alreadyInQueue} doublon(s) ignoré(s).`);
   if (res.removeFrom) lines.push(`Chaque lien converti avec succès sera retiré de « ${res.removeFrom} ».`);
-  if (!lines.length && !res.invalid.length) lines.push('Aucun lien YouTube reconnu.');
+  if (!lines.length && !res.invalid.length) lines.push('Aucun lien reconnu (YouTube, Facebook ou TikTok).');
   box.append(...lines.map((l) => h('div', {}, l)));
   if (res.invalid.length) {
     box.append(h('div', {}, `${res.invalid.length} entrée(s) ignorée(s) :`), h('ul', {}, res.invalid.slice(0, 8).map((i) => h('li', {}, `${i.text} — ${i.reason}`))));
