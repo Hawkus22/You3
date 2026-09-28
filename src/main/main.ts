@@ -36,7 +36,7 @@ function createWindow(): void {
     height: 720,
     minWidth: 760,
     minHeight: 560,
-    title: 'You3',
+    title: `You3 ${app.getVersion()}`,
     icon: path.join(__dirname, '..', '..', 'assets', 'icon.png'),
     backgroundColor: '#14161c',
     show: false,
@@ -47,6 +47,8 @@ function createWindow(): void {
       sandbox: true,
     },
   });
+  // Le titre de la page HTML ne doit pas écraser « You3 x.y.z » dans la barre de la fenêtre.
+  win.on('page-title-updated', (e) => e.preventDefault());
   win.once('ready-to-show', () => win?.show());
   void win.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'));
 
