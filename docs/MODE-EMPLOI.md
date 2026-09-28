@@ -145,13 +145,28 @@ https://youtu.be/dQw4w9WgXcQ
 - Les lignes qui commencent par **`#`** sont des **commentaires** : ignorées, utiles pour vous organiser.
 - Un lien présent deux fois n'est traité qu'une fois.
 - Fichier `.txt` uniquement, 5 Mo maximum.
+- Un fichier enregistré en UTF-8 (avec ou sans BOM), avec des fins de ligne Windows ou Unix, est accepté.
 
 ### Charger le fichier
 
 Deux méthodes :
 
-- Cliquez sur **Importer un fichier .txt** (ou `Ctrl+O`) et choisissez le fichier.
+- Cliquez sur **Importer un fichier .txt** (ou `Ctrl+O`) et choisissez le fichier. La fenêtre de sélection s'ouvre par défaut sur votre **Bureau**, avec le nom **`Playlist1.txt`** déjà proposé : si votre liste s'appelle ainsi et se trouve sur le Bureau, il suffit de valider.
 - Ou **glissez-déposez** le fichier n'importe où dans la fenêtre de You3 : un cadre pointillé rouge apparaît autour de la zone de saisie.
+
+### Effacer les liens du fichier après conversion
+
+Dans les deux cas, une fenêtre vous demande : **« Voulez-vous effacer les entrées du .txt après conversion ? »**, avec deux boutons, **Oui** et **Non** (fermer la fenêtre revient à répondre Non).
+
+- **Non** : le fichier n'est jamais modifié.
+- **Oui** : dès qu'un lien est **converti avec succès**, sa ligne est retirée du fichier `.txt`. Vous suivez ainsi ce qu'il reste à faire.
+  - Les liens **en échec** (KO) **restent** dans le fichier, pour pouvoir les réessayer.
+  - Les liens **« Déjà téléchargé »** restent aussi tant que vous n'avez pas cliqué sur **Retélécharger** et que la conversion n'a pas réussi.
+  - Si une ligne contient plusieurs liens, seul le lien converti est retiré.
+  - Les commentaires (`#`) et les lignes vides ne sont pas modifiés.
+  - Si le fichier est en lecture seule, You3 vous prévient : les liens sont convertis, mais rien n'est effacé.
+
+> Le fichier est modifié au fur et à mesure des conversions. Évitez de le modifier vous-même pendant qu'elles sont en cours, ou enregistrez-le avant de le rouvrir.
 
 ### Le compte rendu
 
@@ -162,6 +177,7 @@ L'encadré jaune indique :
 - combien de liens ont été **ajoutés** à la file ;
 - combien étaient **déjà téléchargés** auparavant (voir [Les doublons](#7-les-doublons)) ;
 - combien de **doublons** ont été ignorés dans la liste ;
+- si vous avez répondu Oui, le rappel que chaque lien converti sera retiré du fichier ;
 - la **liste des entrées ignorées**, avec la raison (lien non YouTube, playlist, identifiant introuvable). Les huit premières s'affichent.
 
 Cet encadré disparaît quand vous cliquez sur sa croix **✕**, sur **Vider les terminés** ou sur **Tout annuler**. Il n'est jamais conservé d'une ouverture de l'application à l'autre.

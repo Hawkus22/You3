@@ -51,6 +51,7 @@ function showNotice(res) {
   if (res.added) lines.push(`${res.added} lien(s) ajouté(s) à la file.`);
   if (res.alreadyDownloaded) lines.push(`${res.alreadyDownloaded} lien(s) déjà téléchargé(s) auparavant : à confirmer dans la file.`);
   if (res.alreadyInQueue) lines.push(`${res.alreadyInQueue} doublon(s) ignoré(s).`);
+  if (res.removeFrom) lines.push(`Chaque lien converti avec succès sera retiré de « ${res.removeFrom} ».`);
   if (!lines.length && !res.invalid.length) lines.push('Aucun lien YouTube reconnu.');
   box.append(...lines.map((l) => h('div', {}, l)));
   if (res.invalid.length) {

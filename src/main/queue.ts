@@ -6,6 +6,7 @@ import { dirs, ffmpegPath, ytdlpPath } from './paths';
 import { finishDownload, findPreviousOk, insertDownload, setDownloadTitle } from './db';
 import { log } from './logger';
 import { getSettings } from './settings';
+import { removeVideoFromTxt } from './txtfile';
 import { InvalidEntry, parseText } from './urls';
 
 export type ItemStatus = 'pending' | 'duplicate' | 'running' | 'done' | 'error';
@@ -22,6 +23,8 @@ export interface QueueItem {
   message: string | null;
   filePath: string | null;
   previous: { date: string; filePath: string | null; fileExists: boolean } | null;
+  /** Fichier .txt dont la ligne sera retirée après une conversion réussie (null = aucun). */
+  sourceFile: string | null;
 }
 
 export interface AddResult {
@@ -29,6 +32,13 @@ export interface AddResult {
   alreadyDownloaded: number;
   alreadyInQueue: number;
   invalid: InvalidEntry[];
+  /** Nom du .txt dont les liens seront retirés après conversion (import avec « Oui »). */
+  removeFrom?: string;
+}
+
+export interface ImportSource {
+  file: string;
+  removeOnSuccess: boolean;
 }
 
 const items: QueueItem[] = [];
@@ -64,7 +74,7 @@ export function isBusy(): boolean {
   return current !== null;
 }
 
-export function addFromText(text: string): AddResult {
+export function addFromText(text: string, source?: ImportSource): AddResult {
   const parsed = parseText(text);
   const result: AddResult = { added: 0, alreadyDownloaded: 0, alreadyInQueue: 0, invalid: parsed.invalid };
   result.alreadyInQueue += parsed.duplicates;
@@ -86,6 +96,7 @@ export function addFromText(text: string): AddResult {
       speed: '',
       message: null,
       filePath: null,
+      sourceFile: source?.removeOnSuccess ? source.file : null,
       previous: prev
         ? {
             date: prev.finished_at ?? prev.started_at,
@@ -317,6 +328,7 @@ async function process1(item: QueueItem): Promise<void> {
         item.speed = '';
         finishDownload(downloadId, 'OK', dest, null);
         log('INFO', 'convert', `OK : ${dest}`, downloadId);
+        if (item.sourceFile) removeFromSource(item, downloadId);
       }
     }
   } catch (e) {
@@ -325,6 +337,18 @@ async function process1(item: QueueItem): Promise<void> {
     fs.rmSync(work, { recursive: true, force: true });
     current = null;
     emit(true);
+  }
+}
+
+/** Retire le lien converti du .txt d'origine ; une erreur ici n'invalide jamais la conversion. */
+function removeFromSource(item: QueueItem, downloadId: number): void {
+  const file = item.sourceFile;
+  if (!file) return;
+  try {
+    const n = removeVideoFromTxt(file, item.videoId);
+    log('INFO', 'import', n ? `Lien retiré de ${file}` : `Lien introuvable dans ${file} (déjà retiré ?)`, downloadId);
+  } catch (e) {
+    log('WARN', 'import', `Impossible de modifier ${file} : ${(e as Error).message}`, downloadId);
   }
 }
 
