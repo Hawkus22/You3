@@ -33,6 +33,13 @@ Node 22+ requis (la base SQLite utilise le module intégré `node:sqlite`, aucun
 
 Données utilisateur : `%APPDATA%\You3\` (`you3.db`, `logs\`, `bin\yt-dlp.exe`).
 
+## Extension navigateur et Playou3
+
+-  : extension **Firefox et Chrome** (Manifest V3, un seul code). Elle envoie la page courante à You3, vérifie avant l'envoi que le son n'est pas déjà téléchargé (fenêtre indiquant l'emplacement du fichier, y compris s'il a été déplacé par Playou3) et peut ajouter la page à un dossier de favoris choisi pour la journée.
+-  : serveur HTTP local (127.0.0.1:47803) réservé à ces extensions ; les liens reçus sont aussi ajoutés à  puis retirés après téléchargement réussi.
+- Chrome : mode développeur ( > Charger l'extension non empaquetée). Firefox permanent :  (clés API addons.mozilla.org).
+- Le bouton « Afficher » ouvre [Playou3](https://github.com/Hawkus22/Playou3) (lecteur mp3/wav) sur la piste, et propose de l'installer s'il est absent.
+
 ## Maintenance
 
 - **yt-dlp** : téléchargé au premier lancement, vérifié à chaque démarrage (option désactivable), bouton de mise à jour dans l'onglet Maintenance.

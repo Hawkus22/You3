@@ -37,6 +37,12 @@ app.whenReady().then(async () => {
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, img.toPNG());
   fs.writeFileSync(path.join(__dirname, '..', 'assets', 'icon.svg'), svg.trim());
+  // Même icône pour l'extension navigateur (Firefox : 48/96 ; Chrome : 16/48/128).
+  const extDir = path.join(__dirname, '..', 'extension', 'icons');
+  fs.mkdirSync(extDir, { recursive: true });
+  for (const n of [16, 32, 48, 96, 128]) {
+    fs.writeFileSync(path.join(extDir, `icon-${n}.png`), img.resize({ width: n, height: n, quality: 'best' }).toPNG());
+  }
   console.log('Icône écrite :', out);
   app.quit();
 });

@@ -1,6 +1,8 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, Notification, shell } from 'electron';
+import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import { startBridge } from './bridge';
 import * as db from './db';
 import { currentLogFile, log, onLog, purgeOld } from './logger';
 import { dataDir, dirs, ytdlpPath } from './paths';
@@ -24,6 +26,49 @@ if (!app.requestSingleInstanceLock()) {
     }
   });
   app.whenReady().then(start);
+}
+
+let playou3Declined = false; // « Non » à l'installation : on ne redemande pas avant le prochain lancement
+
+/** Propose d'installer Playou3 (dernière Release GitHub). Retourne true si l'installeur a été lancé. */
+async function offerPlayou3Install(): Promise<boolean> {
+  const { response } = await dialog.showMessageBox(win!, {
+    type: 'question',
+    buttons: ['Installer Playou3', "Non, ouvrir l'Explorateur"],
+    defaultId: 0,
+    cancelId: 1,
+    title: 'Playou3',
+    message: "Playou3 n'est pas installé.",
+    detail: "Playou3 est le lecteur de musique compagnon de You3. Voulez-vous le télécharger et l'installer maintenant ?",
+  });
+  if (response !== 0) {
+    playou3Declined = true;
+    return false;
+  }
+  try {
+    const res0 = await fetch('https://api.github.com/repos/Hawkus22/Playou3/releases/latest');
+    if (!res0.ok) throw new Error(res0.status === 404 ? "aucune version de Playou3 n'est encore publiée" : `GitHub a répondu ${res0.status}`);
+    const rel = (await res0.json()) as { assets?: { name: string; browser_download_url: string }[] };
+    const asset = rel.assets?.find((a) => /^Playou3-Setup-.*\.exe$/.test(a.name));
+    if (!asset) throw new Error('installeur introuvable dans la dernière Release');
+    const res = await fetch(asset.browser_download_url);
+    if (!res.ok) throw new Error(`téléchargement refusé (${res.status})`);
+    const file = path.join(dirs.tmp(), asset.name);
+    fs.writeFileSync(file, Buffer.from(await res.arrayBuffer()));
+    log('INFO', 'app', `Installeur Playou3 téléchargé : ${file}`);
+    const err = await shell.openPath(file);
+    if (err) throw new Error(err);
+    return true;
+  } catch (e) {
+    log('WARN', 'app', `Installation de Playou3 impossible : ${(e as Error).message}`);
+    await dialog.showMessageBox(win!, {
+      type: 'warning',
+      title: 'Playou3',
+      message: "L'installation automatique a échoué.",
+      detail: `${(e as Error).message}\n\nLe fichier va s'ouvrir dans l'Explorateur Windows.`,
+    });
+    return false;
+  }
 }
 
 const send = (channel: string, ...args: unknown[]) => {
@@ -197,9 +242,25 @@ function registerIpc(): void {
   ipcMain.handle('logs:currentFile', () => currentLogFile());
 
   // Fichiers / dossiers
-  ipcMain.handle('fs:showInFolder', (_e, p: string) => {
-    if (typeof p === 'string' && fs.existsSync(p)) shell.showItemInFolder(p);
-    return fs.existsSync(String(p));
+  ipcMain.handle('fs:showInFolder', async (_e, p: string) => {
+    if (typeof p !== 'string' || !fs.existsSync(p)) return false;
+    // Playou3 installé : on l'ouvre (ou on le met au premier plan) sur ce fichier ;
+    // sinon on propose de l'installer, et à défaut l'Explorateur Windows.
+    const playou3 = path.join(app.getPath('appData'), '..', 'Local', 'Programs', 'Playou3', 'Playou3.exe');
+    if (/\.(mp3|wav)$/i.test(p)) {
+      if (fs.existsSync(playou3)) {
+        try {
+          spawn(playou3, ['--show', p], { detached: true, stdio: 'ignore' }).unref();
+          return true;
+        } catch (e) {
+          log('WARN', 'app', `Lancement de Playou3 impossible : ${(e as Error).message}`);
+        }
+      } else if (!playou3Declined && (await offerPlayou3Install())) {
+        return true;
+      }
+    }
+    shell.showItemInFolder(p);
+    return true;
   });
   ipcMain.handle('fs:openDownloads', () => shell.openPath(dirs.downloads()));
   ipcMain.handle('fs:exists', (_e, p: string) => typeof p === 'string' && fs.existsSync(p));
@@ -285,6 +346,7 @@ async function start(): Promise<void> {
 
   registerIpc();
   watchQueueCompletion();
+  startBridge();
   buildMenu();
   createWindow();
 
