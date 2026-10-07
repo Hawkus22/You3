@@ -35,9 +35,9 @@ Données utilisateur : `%APPDATA%\You3\` (`you3.db`, `logs\`, `bin\yt-dlp.exe`).
 
 ## Extension navigateur et Playou3
 
--  : extension **Firefox et Chrome** (Manifest V3, un seul code). Elle envoie la page courante à You3, vérifie avant l'envoi que le son n'est pas déjà téléchargé (fenêtre indiquant l'emplacement du fichier, y compris s'il a été déplacé par Playou3) et peut ajouter la page à un dossier de favoris choisi pour la journée.
--  : serveur HTTP local (127.0.0.1:47803) réservé à ces extensions ; les liens reçus sont aussi ajoutés à  puis retirés après téléchargement réussi.
-- Chrome : mode développeur ( > Charger l'extension non empaquetée). Firefox permanent :  (clés API addons.mozilla.org).
+- `extension/` : extension **Firefox et Chrome** (Manifest V3, un seul code). Elle envoie la page courante à You3, vérifie avant l'envoi que le son n'est pas déjà téléchargé (fenêtre indiquant l'emplacement du fichier, y compris s'il a été déplacé par Playou3) et peut ajouter la page à un dossier de favoris choisi pour la journée.
+- `src/main/bridge.ts` : serveur HTTP local (127.0.0.1:47803) réservé à ces extensions ; les liens reçus sont aussi ajoutés à `Documents\You3_A_telecharger.txt`, puis retirés après téléchargement réussi.
+- Chrome : mode développeur (`chrome://extensions` > Charger l'extension non empaquetée). Firefox permanent : `npx web-ext sign --channel unlisted --source-dir extension` (clés API addons.mozilla.org dans `WEB_EXT_API_KEY` et `WEB_EXT_API_SECRET`).
 - Le bouton « Afficher » ouvre [Playou3](https://github.com/Hawkus22/Playou3) (lecteur mp3/wav) sur la piste, et propose de l'installer s'il est absent.
 
 ## Maintenance
