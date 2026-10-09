@@ -2,3 +2,4 @@ node_modules/
 dist/
 release/
 extension-signed/
+extension/.amo-upload-uuid
